@@ -1,14 +1,68 @@
 import { Lobby, Player, LobbySettings } from "@/lib/shared";
 
+
 const lobbies = new Map<string, Lobby>();
 
 const DEFAULT_SETTINGS: LobbySettings = {
   gridWidth: 20,
   gridHeight: 20,
-  sweetCount: 50,
+  sweetCount: 5,
   matchDurationSec: 60,
   tickRate: 10,
 };
+
+const PLAYER_COLORS = [
+  "#e74c3c", // red
+  "#3498db", // blue
+  "#2ecc71", // green
+  "#f1c40f", // yellow
+  "#9b59b6", // purple
+  "#e67e22", // orange
+  "#1abc9c", // turquoise
+  "#34495e", // dark blue
+  "#f39c12", // gold
+  "#e74c3c", // crimson
+  "#c0392b", // dark red
+  "#16a085", // dark turquoise
+  "#27ae60", // dark green
+  "#2980b9", // dark blue
+  "#8e44ad", // dark purple
+  "#d35400", // dark orange
+  "#c23b22", // burnt red
+  "#a93226", // maroon
+  "#76d7c4", // mint
+  "#f8b88b", // peach
+  "#aa96da", // lavender
+  "#fcbad3", // pink
+  "#a8dadc", // light blue
+  "#457b9d", // slate blue
+  "#1d3557", // navy
+  "#f1faee", // off white
+  "#e63946", // red accent
+  "#ff6b6b", // coral
+  "#4ecdc4", // teal
+  "#45b7d1", // sky blue
+  "#ffa502", // vibrant orange
+  "#ff006e", // hot pink
+  "#8338ec", // vibrant purple
+  "#ffbe0b", // bright yellow
+  "#fb5607", // orange red
+  "#ffbe0b", // golden yellow
+  "#05ffa1", // neon green
+  "#00d9ff", // cyan
+  // add more colors as needed
+];
+
+function getNextColor(players: Player[]) {
+  const used = new Set(players.map(p => p.color));
+  return PLAYER_COLORS.find(c => !used.has(c)) ?? "#000000"; // default to black if all colors used
+}
+
+
+function getRandomColor(): string {
+  return PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)];
+}
+
 
 function generateLobbyCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -23,11 +77,12 @@ function createPlayer(params: {
   id: string;
   name: string;
   isHost: boolean;
+  existingPlayers?: Player[];
 }): Player {
   return {
     id: params.id,
     name: params.name,
-    color: "#000000", // placeholder
+    color: getNextColor(params.existingPlayers ?? []),
     score: 0,
     x: 0,
     y: 0,
@@ -49,6 +104,7 @@ export function createLobby(hostId: string, hostName: string): Lobby {
     id: hostId,
     name: hostName,
     isHost: true,
+    existingPlayers: [],
   });
 
   const lobby: Lobby = {
@@ -84,6 +140,8 @@ export function joinLobby(
     id: playerId,
     name: playerName,
     isHost: false,
+    existingPlayers: lobby.players,
+
   });
 
   lobby.players.push(player);

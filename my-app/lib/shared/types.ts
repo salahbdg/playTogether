@@ -40,3 +40,4 @@ export type GameState = {
   startedAt: number;
 };
 export type Direction = "up" | "down" | "left" | "right";
+

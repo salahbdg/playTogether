@@ -38,35 +38,54 @@ function spawnSweets(state: GameState, count: number) {
   }
 }
 
+// check for collisions between 
+function isCellOccupied(
+  x: number,
+  y: number,
+  state: GameState,
+  exceptPlayerId: string
+) {
+  return Object.values(state.players).some(
+    p => p.id !== exceptPlayerId && p.x === x && p.y === y
+  );
+}
+
+
 /* ---------------- Movement ---------------- */
+
 function movePlayer(player: Player, dir: Direction, state: GameState) {
   let { x, y } = player;
 
   switch (dir) {
-    case "up":
-      y = Math.max(0, y - 1);
-      break;
-    case "down":
-      y = Math.min(state.gridHeight - 1, y + 1);
-      break;
-    case "left":
-      x = Math.max(0, x - 1);
-      break;
-    case "right":
-      x = Math.min(state.gridWidth - 1, x + 1);
-      break;
+    case "up": y--; break;
+    case "down": y++; break;
+    case "left": x--; break;
+    case "right": x++; break;
+  }
+
+  // Grid bounds
+  x = Math.max(0, Math.min(state.gridWidth - 1, x));
+  y = Math.max(0, Math.min(state.gridHeight - 1, y));
+
+  // ❌ Block if another player occupies the cell
+  if (isCellOccupied(x, y, state, player.id)) {
+    return; // movement canceled
   }
 
   player.x = x;
   player.y = y;
 
-  // Check for sweets collision
-  const sweetIndex = state.sweets.findIndex((s) => s.x === x && s.y === y);
+  // Sweet collision
+  const sweetIndex = state.sweets.findIndex(
+    s => s.x === x && s.y === y
+  );
+
   if (sweetIndex !== -1) {
     player.score += 1;
     state.sweets.splice(sweetIndex, 1);
   }
 }
+
 
 /* ---------------- Public API ---------------- */
 export function startGame(lobby: Lobby) {
@@ -123,8 +142,10 @@ function tick(code: string, tickRate: number) {
   const elapsed = (Date.now() - state.startedAt) / 1000;
   state.remainingTime = Math.max(0, state.matchDurationSec - elapsed);
 
+  const noSweetsLeft = state.sweets.length === 0;
+
   // Game ends
-  if (state.remainingTime <= 0) {
+  if (state.remainingTime <= 0 || noSweetsLeft) {
     const results = computeResults(state.players);
 
     io.to(code).emit("game:finished", results);
