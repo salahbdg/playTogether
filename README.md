@@ -107,7 +107,7 @@ Live Demo: [https://playtogether-production.up.railway.app](https://playtogether
 
 ```bash
 # Clone repository
-git clone <your-repo-url>
+git clone https://github.com/salahbdg/playTogether.git
 cd my-app
 
 # Install dependencies
