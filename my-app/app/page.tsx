@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     // Create socket once
-    const s = io("http://localhost:3000");
+    const s = io();
     socket = s;
 
     socket.on("connect", () => console.log("Connected:", socket.id));
