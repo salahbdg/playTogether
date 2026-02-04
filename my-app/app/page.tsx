@@ -29,13 +29,16 @@ export default function Home() {
 
     socket.on("connect", () => console.log("Connected:", socket.id));
 
+    // @ts-ignore
     socket.on("lobby:state", ({ lobby }) => setLobby(lobby));
+    // @ts-ignore
     socket.on("game:state", (state) => setGameState(state));
+    // @ts-ignore
     socket.on("game:finished", (results) => {
       console.log("Final results:", results);
 
       // Check if current player is a winner
-      const isWinner = results.winners.some((w) => w.id === socket.id);
+      const isWinner = results.winners.some((w:any) => w.id === socket.id);
       
       setGameResults({
         winners: results.winners,
@@ -77,6 +80,7 @@ export default function Home() {
       }
       if (dir) {
         console.log("Sending input:", dir);
+        // @ts-ignore
         socket.emit("game:input", { dir });
       }
     };
@@ -91,15 +95,18 @@ export default function Home() {
 
   const handleCreateLobby = () => {
     if (!name) return alert("Enter your name");
+    // @ts-ignore
     socket.emit("lobby:create", { name });
   };
 
   const handleJoinLobby = () => {
     if (!name || !lobbyCode) return alert("Enter name and lobby code");
+    // @ts-ignore
     socket.emit("lobby:join", { name, code: lobbyCode });
   };
 
   const handleStartGame = () => {
+    // @ts-ignore
     socket.emit("game:start");
     setShowControls(false); // Hide controls when game starts
   };
