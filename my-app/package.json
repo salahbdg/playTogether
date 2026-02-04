@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "next build && tsc server.ts --outDir dist --esModuleInterop --resolveJsonModule",
-    "start": "node dist/server.js",
+    "build": "next build",
+    "start": "tsx server.ts",
     "lint": "eslint"
   },
   "dependencies": {
