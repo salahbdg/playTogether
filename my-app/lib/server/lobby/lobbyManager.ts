@@ -6,7 +6,7 @@ const lobbies = new Map<string, Lobby>();
 const DEFAULT_SETTINGS: LobbySettings = {
   gridWidth: 20,
   gridHeight: 20,
-  sweetCount: 5,
+  sweetCount: 30,
   matchDurationSec: 60,
   tickRate: 10,
 };
