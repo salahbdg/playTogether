@@ -5,6 +5,9 @@ A web-based multiplayer real-time game built with **Next.js (App Router), TypeSc
 
 Live Demo: [https://playtogether-production.up.railway.app](https://playtogether-production.up.railway.app)
 
+<video src="assets/demo.mp4" autoplay muted loop playsinline></video>
+
+
 ---
 
 ## Table of Contents
